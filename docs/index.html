@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<!-- DESIGN RATIONALE:
+     New entry in the design system. Mirage is intelligence analysis research — signal-noise metaphor.
+     Palette: deep teal (#00c8b4 primary) + amber (#e8a000 secondary) on very dark background.
+     "Intelligence intercept" feel — data callouts, structured signal against noise.
+     Share Tech Mono for model names, construct labels, percentages, ICC values.
+     Barlow 300 for body — flowing narrative with precise data annotations.
+     Scanline body::before retained. Body::after vignette added for depth (mirage = obscured signal).
+     Key figures never to swap: GPT-4 94.2%, Claude 85.7%, ICC 0.98, 88,647 emails.
+     Footer: mirage + 2026-06-10.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIRAGE — LLM Causal Inference Research</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080b0b;
+    --surface: #0b1010;
+    --surface2: #0f1818;
+    --border: #142020;
+    --border-bright: #1e3030;
+    --accent: #00c8b4;
+    --accent-dim: #006050;
+    --accent-pale: #003830;
+    --amber: #e8a000;
+    --amber-dim: #7a5200;
+    --amber-pale: #3a2800;
+    --text: #a8c0b8;
+    --text-bright: #d4e8e0;
+    --muted: #3a5048;
+    --code-bg: #060c0c;
+    --green: #00e87a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 300;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.09) 2px, rgba(0,0,0,0.09) 4px);
+    pointer-events: none;
+    z-index: 100;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.6) 100%);
+    pointer-events: none;
+    z-index: 99;
+  }
+
+  .container {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 3.5rem 2rem 7rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2.25rem;
+    margin-bottom: 2.25rem;
+    position: relative;
+  }
+
+  .sys-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    opacity: 0.8;
+  }
+
+  h1 {
+    font-size: 2.4rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: #fff;
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+  h1 .sep { color: var(--accent); font-weight: 300; margin: 0 0.3em; }
+
+  .subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 0.75rem;
+    letter-spacing: 0.1em;
+  }
+
+  .corner-tag {
+    position: absolute; top: 0; right: 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.58rem; color: var(--muted);
+    letter-spacing: 0.15em; text-align: right; line-height: 1.9;
+  }
+  .corner-tag span { display: block; }
+
+  .section-break {
+    display: flex; align-items: center; gap: 1rem; margin: 3rem 0 1.5rem;
+  }
+  .section-break span {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--muted); white-space: nowrap;
+  }
+  .section-break::before, .section-break::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--border), var(--border-bright), var(--border));
+  }
+
+  .info-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 1rem 1.3rem; margin: 1rem 0; font-size: 0.85rem; color: var(--text);
+  }
+  .info-block .blk-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.58rem; color: var(--accent); letter-spacing: 0.22em;
+    text-transform: uppercase; display: block; margin-bottom: 0.35rem;
+  }
+
+  /* Key metrics */
+  .callout-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border-bright); margin: 1rem 0; border: 1px solid var(--border-bright); }
+  .callout-cell { background: var(--surface); padding: 1.1rem 0.9rem; text-align: center; }
+  .callout-value {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.25rem; color: var(--accent); line-height: 1; display: block;
+  }
+  .callout-value.amber { color: var(--amber); }
+  .callout-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin-top: 0.45rem; display: block;
+  }
+
+  /* Data tables */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin: 1rem 0; }
+  .data-table th {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.55rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--muted); padding: 0.45rem 0.9rem;
+    text-align: left; border-bottom: 1px solid var(--border-bright); background: var(--code-bg);
+  }
+  .data-table td { padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(0,200,180,0.02); }
+  .data-table td:first-child {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.68rem; color: var(--accent); letter-spacing: 0.04em;
+  }
+  .data-table td.best { color: var(--green); font-weight: 600; }
+  .data-table td.second { color: var(--accent); }
+
+  /* Causal chain */
+  .chain-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    padding: 1rem 1.3rem; margin: 1rem 0;
+    font-family: 'Share Tech Mono', monospace; font-size: 0.74rem;
+    color: var(--amber); line-height: 2.0; overflow-x: auto; white-space: pre;
+  }
+
+  /* Model results */
+  .model-grid { display: flex; flex-direction: column; gap: 0.75rem; margin: 1rem 0; }
+  .model-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.9rem 1.1rem;
+    display: grid; grid-template-columns: 10rem 1fr;
+    gap: 1rem; align-items: start;
+  }
+  .model-name {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.78rem;
+    color: var(--text-bright); letter-spacing: 0.06em;
+  }
+  .model-score {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.62rem;
+    color: var(--accent); margin-top: 0.2rem; display: block;
+  }
+  .model-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
+
+  /* Skills */
+  .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border-bright); margin: 1rem 0; }
+  .skill-cell { background: var(--surface); padding: 0.85rem 1rem; font-size: 0.8rem; }
+  .skill-label {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.58rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent);
+    display: block; margin-bottom: 0.3rem;
+  }
+  .skill-cell p { color: var(--text); line-height: 1.5; }
+
+  footer {
+    margin-top: 4.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+    font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: var(--muted);
+    letter-spacing: 0.15em; display: flex; justify-content: space-between; text-transform: uppercase;
+  }
+
+  p { margin-bottom: 0.8rem; }
+  p:last-child { margin-bottom: 0; }
+
+  @media (max-width: 640px) {
+    .callout-row { grid-template-columns: 1fr 1fr; }
+    .model-row { grid-template-columns: 1fr; gap: 0.4rem; }
+    .skills-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="sys-label">// LLM CAUSAL INFERENCE RESEARCH — PORTFOLIO PROJECT</div>
+    <h1>Mirage<span class="sep">//</span>Signal</h1>
+    <div class="subtitle">88,647 PHISHING EMAILS · DAG CONSTRUCTION · DOWHY VALIDATION · 4 FRONTIER LLMS · ICC 0.98</div>
+    <div class="corner-tag">
+      <span>RESEARCH STATUS — COMPLETE</span>
+      <span>rev 2026-06-10</span>
+    </div>
+  </header>
+
+  <div class="info-block">
+    <span class="blk-label">Research Question</span>
+    Can a frontier large language model move beyond pattern-matching to reason causally about
+    the psychological mechanisms that drive social engineering success? Not whether an LLM can
+    flag a phishing message — but whether it can explain <em>why</em> that message works, and
+    whether its explanation matches statistically inferred ground truth.
+  </div>
+
+  <div class="callout-row">
+    <div class="callout-cell">
+      <span class="callout-value">88,647</span>
+      <span class="callout-label">Phishing emails (raw)</span>
+    </div>
+    <div class="callout-cell">
+      <span class="callout-value amber">94.2%</span>
+      <span class="callout-label">GPT-4 DAG alignment</span>
+    </div>
+    <div class="callout-cell">
+      <span class="callout-value">85.7%</span>
+      <span class="callout-label">Claude 3 Sonnet alignment</span>
+    </div>
+    <div class="callout-cell">
+      <span class="callout-value">0.98</span>
+      <span class="callout-label">ICC inter-rater reliability</span>
+    </div>
+  </div>
+
+  <div class="section-break"><span>Why Causal Reasoning Matters</span></div>
+
+  <p>Social engineering attacks succeed because they exploit cognitive heuristics — urgency,
+  authority, trust — not software vulnerabilities. Existing detection systems model emails as
+  unordered feature collections, flagging lexical anomalies while ignoring the causal drivers
+  that persuade recipients to comply.</p>
+
+  <p>Causal reasoning produces defences that survive adversarial paraphrase. A model that
+  understands <em>why</em> urgency causes compliance can detect urgency-manipulation even when the
+  surface features are rewritten. A correlational model trained on lexical patterns cannot.</p>
+
+  <div class="info-block" style="border-left-color: var(--amber);">
+    <span class="blk-label" style="color:var(--amber)">Context</span>
+    Verizon's 2024 DBIR finds the human element present in 68% of confirmed breaches. The
+    attack surface is not software — it is the human response to manipulation. This research
+    asks whether AI can model that response at a causal level, not merely flag its surface markers.
+  </div>
+
+  <div class="section-break"><span>Datasets</span></div>
+
+  <table class="data-table">
+    <tr><th>Channel</th><th>Raw rows</th><th>Cleaned rows</th><th>Malicious %</th><th>Features</th></tr>
+    <tr><td>E-mail phishing</td><td>88,647</td><td>59,788</td><td>31.15%</td><td>10</td></tr>
+    <tr><td>SMS smishing</td><td>67,008</td><td>67,008</td><td>39.07%</td><td>10</td></tr>
+    <tr><td>Synthetic vishing (CVAE)</td><td>60,000</td><td>60,000</td><td>30.00%</td><td>10</td></tr>
+  </table>
+
+  <p>The vishing dataset was synthesised using a Conditional Variational Auto-Encoder (CVAE),
+  preserving the latent causal scaffold while stripping channel-specific surface artefacts.
+  This is privacy by design: the research avoids processing real voice call data while
+  maintaining statistical fidelity to the causal structure.</p>
+
+  <div class="section-break"><span>Dual-Pathway Framework</span></div>
+
+  <p>The research fuses two analytical traditions rarely combined: causal graph discovery from
+  real data, and structured LLM interrogation against those graphs. Each pathway validates the other.</p>
+
+  <p><strong style="color:var(--text-bright)">Pathway 1 — DAG Construction:</strong> Four causal-discovery
+  algorithms attacked each dataset independently: GES (Greedy Equivalence Search), PC-Algorithm
+  (conditional-independence testing, α = 0.05), Bayesian Networks, and DeepNOTEARS
+  (gradient-descent structure learning, L1 = 0.01). Graphs merged into two hybrid ensembles
+  (GES∪BN and PC∪DeepNOTEARS). Every construct→outcome edge validated via DoWhy four-stage
+  pipeline: assumption statement → estimand identification → binomial GLM estimation →
+  robustness refutation (n=500 Monte Carlo placebo, random-common-cause injection, bootstrapped subsets).</p>
+
+  <p><strong style="color:var(--text-bright)">Pathway 2 — LLM Evaluation:</strong> Four frontier
+  models received 36 structured JSON prompts distributed across five reasoning categories
+  (probability, conditional, impact ranking, inverse reasoning, fixed prompts). Each response
+  scored across five equally weighted dimensions: awareness, depth, structure, directionality,
+  generalisability.</p>
+
+  <div class="chain-block">Validated causal chains (primary phishing DAG):
+
+Urgency    → Deception → Phishing
+Trust      → Obfuscation → Phishing
+Authority  → Deception → Phishing
+
+Deception: convergent mediator across all four discovery methods
+Obfuscation: technical amplifier — enables rather than initiates manipulation</div>
+
+  <div class="section-break"><span>DoWhy Validation Results</span></div>
+
+  <table class="data-table">
+    <tr><th>Construct</th><th>β (log-odds)</th><th>Placebo p</th><th>Rand-CC p</th><th>Subset p</th><th>Verdict</th></tr>
+    <tr><td>Obfuscation</td><td>0.116</td><td>0.002</td><td>0.92</td><td>0.92</td><td class="best">Pass</td></tr>
+    <tr><td>Trust</td><td>0.273</td><td>0.002</td><td>0.84</td><td>0.92</td><td class="best">Pass</td></tr>
+    <tr><td>Urgency</td><td>−0.067</td><td>0.002</td><td>1.00</td><td>0.96</td><td class="best">Pass</td></tr>
+    <tr><td>Deception</td><td>−0.177</td><td>0.002</td><td>0.68</td><td>0.95</td><td class="best">Pass</td></tr>
+    <tr><td>Authority</td><td>−0.441</td><td>0.002</td><td>0.94</td><td>0.98</td><td class="best">Pass</td></tr>
+  </table>
+
+  <p>Minimum empirical p across placebo runs: p ≈ 0.002. All five constructs passed all three
+  refutation methods. The validated hybrid DAGs served as ground truth for all LLM scoring.</p>
+
+  <div class="section-break"><span>LLM Results — DAG Alignment</span></div>
+
+  <table class="data-table">
+    <tr><th>Model</th><th>Alignment (/20)</th><th>Fidelity (/60)</th><th>DAG Alignment %</th><th>S_LLM (/5)</th></tr>
+    <tr><td>GPT-4</td><td class="best">18.5</td><td class="best">58.0</td><td class="best">94.2%</td><td class="best">4.60</td></tr>
+    <tr><td>Claude 3 Sonnet</td><td class="second">16.0</td><td class="second">56.5</td><td class="second">85.7%</td><td class="second">4.14</td></tr>
+    <tr><td>Gemini 2.5 Pro</td><td>14.0</td><td>45.5</td><td>72.3%</td><td>3.45</td></tr>
+    <tr><td>DeepSeek-67B</td><td>10.0</td><td>34.5</td><td>53.0%</td><td>2.44</td></tr>
+  </table>
+
+  <p>ICC(2,1) = 0.98 (95% CI ≈ 0.94–0.99) — classified as "almost perfect"
+  (Shrout and Fleiss, 1979). Individual dimension ICC values ranged from 0.89 (Directionality)
+  to 0.97 (Structure).</p>
+
+  <div class="model-grid">
+    <div class="model-row">
+      <div>
+        <div class="model-name">GPT-4</div>
+        <span class="model-score">94.2% DAG alignment · S_LLM 4.60/5</span>
+      </div>
+      <div class="model-desc">Highest composite score. Accurately identified mediating nodes
+      and demonstrated deep awareness of construct interactions. Only model to consistently
+      attempt genuine causal explanation rather than correlational description. Superior in
+      chain construction, ranking tasks, and inverse reasoning.</div>
+    </div>
+    <div class="model-row">
+      <div>
+        <div class="model-name">Claude 3 Sonnet</div>
+        <span class="model-score">85.7% DAG alignment · S_LLM 4.14/5</span>
+      </div>
+      <div class="model-desc">Strong on Deception and Urgency; high logical consistency.
+      Moderate success in multi-step chains. Occasionally lacked deeper abstraction in
+      comparative tasks. Faltered when reasoning required linking constructs into longer
+      causal sequences.</div>
+    </div>
+    <div class="model-row">
+      <div>
+        <div class="model-name">Gemini 2.5 Pro</div>
+        <span class="model-score">72.3% DAG alignment · S_LLM 3.45/5</span>
+      </div>
+      <div class="model-desc">Consistent construct recognition with reduced interpretive depth.
+      Less consistent on multi-step causal chains and inverse reasoning tasks.</div>
+    </div>
+    <div class="model-row">
+      <div>
+        <div class="model-name">DeepSeek-67B</div>
+        <span class="model-score">53.0% DAG alignment · S_LLM 2.44/5</span>
+      </div>
+      <div class="model-desc">Evaluated on two RunPod H100 SXM GPU pods (80 GB VRAM, 16 vCPU,
+      125 GB RAM). Temperature 0.70, top-p 0.95. Weakest DAG alignment across all constructs.
+      Struggled with directionality and generalisability dimensions.</div>
+    </div>
+  </div>
+
+  <div class="section-break"><span>Key Finding</span></div>
+
+  <div class="info-block" style="border-left-color: var(--amber);">
+    <span class="blk-label" style="color:var(--amber)">Principal Conclusion</span>
+    Current frontier LLMs can detect surface patterns in social engineering but struggle with
+    multi-hop causal chains and inverse reasoning. GPT-4 at 94.2% alignment is the upper bound
+    for current off-the-shelf models — demonstrating that causally-informed LLM detection is
+    plausible but not yet robust enough for adversarial production environments without
+    fine-tuning or hybrid graph-LLM ensemble architectures.
+  </div>
+
+  <div class="section-break"><span>Skills Demonstrated</span></div>
+
+  <div class="skills-grid">
+    <div class="skill-cell">
+      <span class="skill-label">Causal Inference</span>
+      <p>DAG construction with GES, PC-Algorithm, Bayesian Networks, DeepNOTEARS. DoWhy four-stage validation pipeline with Monte Carlo refutation.</p>
+    </div>
+    <div class="skill-cell">
+      <span class="skill-label">LLM Evaluation</span>
+      <p>Structured prompt design (36 prompts across 5 categories). Composite scoring framework (S_LLM). ICC(2,1) inter-rater reliability measurement.</p>
+    </div>
+    <div class="skill-cell">
+      <span class="skill-label">Dataset Engineering</span>
+      <p>Three-channel corpus (phishing/smishing/vishing). CVAE synthetic data generation. Feature-to-construct mapping schema.</p>
+    </div>
+    <div class="skill-cell">
+      <span class="skill-label">Statistical Rigour</span>
+      <p>ICC(2,1) = 0.98. DoWhy placebo permutation testing. Construct-level effect estimation with binomial GLM.</p>
+    </div>
+    <div class="skill-cell">
+      <span class="skill-label">Security Research</span>
+      <p>Dissertation-level independent research. Causal framing of social engineering — beyond correlational detection.</p>
+    </div>
+    <div class="skill-cell">
+      <span class="skill-label">Privacy by Design</span>
+      <p>Synthetic vishing data via CVAE to avoid processing real voice data. All records anonymised. No live phishing content generated.</p>
+    </div>
+  </div>
+
+  <div class="section-break"><span>Repository</span></div>
+
+  <div class="info-block">
+    <span class="blk-label">GitHub</span>
+    Full methodology, dataset description, causal graph pipeline, LLM evaluation framework, and research references:
+    <span style="font-family:'Share Tech Mono',monospace;font-size:0.78rem;color:var(--accent)">github.com/rootdrift/mirage</span>
+  </div>
+
+  <footer>
+    <span>mirage — llm causal inference research</span>
+    <span>rev 2026-06-10</span>
+  </footer>
+
+</div>
+</body>
+</html>
