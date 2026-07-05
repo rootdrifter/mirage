@@ -299,6 +299,49 @@ it, and measuring that gap is the contribution.
 
 ---
 
+## From Research to Deployment — How a SOC Would Actually Use This
+
+The evasion-resistance argument above is the *why*. This is the *how* — the path from a research DAG
+to an enrichment layer running on a production email gateway. It is deliberately framed as
+detection-engineering work, not a paper.
+
+1. **Build the causal graph on *your* baseline, not the public corpus.** The validated DAG here was
+   discovered over public phishing data; in deployment, an organisation re-runs the discovery pipeline
+   over its **own** confirmed-phishing and confirmed-legitimate mail. The constructs (urgency,
+   authority, trust, deception, obfuscation) generalise; the *edge strengths* should be re-estimated
+   against the traffic the SOC actually defends, so the model reflects that org's real adversaries.
+2. **Train the DoWhy estimator on historical labelled mail.** Use the SOC's verdict history (analyst
+   dispositions, sandbox results, user reports) as ground truth. DoWhy's refutation tests
+   (placebo/random-common-cause) become a *deployment gate*: an edge that fails refutation on local
+   data does not ship.
+3. **Deploy as an enrichment layer, never a sole block-decision.** The model sits behind the existing
+   gateway as an enrichment stage: each message gets a **causal confidence score** plus the specific
+   constructs that fired (e.g. "high Authority + Urgency, mediated by Deception"). It augments the
+   incumbent correlational filter rather than replacing it — defence-in-depth, and it fails open to the
+   existing control.
+4. **Make alerts explainable, not binary.** Instead of "spam: yes/no", the analyst sees *which causal
+   levers* the message pulls. That is triage-grade context: a message scoring high on the durable
+   causal structure is worth attention even when its surface looks novel — precisely the case a
+   correlational filter misses. Explainability also shortens MTTD/MTTR and supports the audit trail.
+5. **Tune on analyst feedback in a closed loop.** Every analyst disposition feeds back as a label;
+   periodically re-estimate edge strengths and re-run refutation. Because the model keys on causal
+   structure rather than surface tokens, this loop drifts far more slowly than a keyword/correlational
+   model — retraining is correction, not the constant catch-up that surface detectors require.
+
+**Why this is hard to probe.** A correlational filter can be reverse-engineered by an adversary
+sending test variations and watching the score (the hill-climb from the section above). A causal
+enrichment layer exposes far less to that probe: the score reflects *mechanisms the attacker needs to
+keep* to make the phish work, so the cheap "paraphrase until it passes" loop stops paying off. The
+deployment inherits the research property — surface perturbation does not move the causal score.
+
+**Honest deployment caveats.** This is an enrichment and prioritisation layer, not a silver bullet:
+it adds latency and a model dependency, the local re-discovery in step 1 needs a sufficient labelled
+history (the [scale argument](#dataset-scale--what-88647-records-buys) applies again), and the
+reasoning quality is bounded by the model implementing it — a weak reasoner degrades to correlational
+behaviour, which is exactly what the GPT-4-vs-DeepSeek-67B spread in the results quantifies.
+
+---
+
 ## Dataset Scale — What 88,647 Records Buys
 
 The primary corpus is **88,647 raw phishing e-mails** (59,788 after cleaning), alongside 67,008
