@@ -340,6 +340,14 @@ history (the [scale argument](#dataset-scale--what-88647-records-buys) applies a
 reasoning quality is bounded by the model implementing it — a weak reasoner degrades to correlational
 behaviour, which is exactly what the GPT-4-vs-DeepSeek-67B spread in the results quantifies.
 
+**Connection to the detection lab.** This is the same discipline applied hands-on in the *watchtower*
+Wazuh SIEM home lab: reasoning about *why* a technique works in order to write the detection for it.
+A correlational rule keyed on a surface indicator (a specific string, a hash, an IP) is the SIEM
+equivalent of the brittle phishing filter above — cheap for an adversary to evade. The durable
+detection keys on the *mechanism* the attacker cannot remove without abandoning the attack — the
+Pyramid of Pain in operational form. Causal thinking here and detection engineering there are the
+same skill pointed at two problems.
+
 ---
 
 ## Dataset Scale — What 88,647 Records Buys
