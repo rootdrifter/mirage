@@ -274,9 +274,14 @@
   unordered feature collections, flagging lexical anomalies while ignoring the causal drivers
   that persuade recipients to comply.</p>
 
-  <p>Causal reasoning produces defences that survive adversarial paraphrase. A model that
-  understands <em>why</em> urgency causes compliance can detect urgency-manipulation even when the
-  surface features are rewritten. A correlational model trained on lexical patterns cannot.</p>
+  <p>Causal reasoning produces defences that survive adversarial paraphrase. A correlational
+  filter that has learned the token <em>"URGENT"</em> co-occurs with phishing fails the moment an
+  attacker writes <em>"time-sensitive"</em>, or moves the same pressure from email to a phone call —
+  the surface feature has changed but the manipulation has not. A causal model instead learns what
+  actually <em>causes</em> compliance: structural drivers that cannot be rewritten without
+  defeating the attack itself. That is the property an adaptive adversary cannot trivially evade,
+  and it is why the relevant axis for durable social-engineering defence is causal inference, not
+  ever-larger lexical training sets.</p>
 
   <div class="info-block" style="border-left-color: var(--amber);">
     <span class="blk-label" style="color:var(--amber)">Context</span>
@@ -354,6 +359,18 @@ Obfuscation: technical amplifier — enables rather than initiates manipulation<
   <p>ICC(2,1) = 0.98 (95% CI ≈ 0.94–0.99) — classified as "almost perfect"
   (Shrout and Fleiss, 1979). Individual dimension ICC values ranged from 0.89 (Directionality)
   to 0.97 (Structure).</p>
+
+  <div class="info-block" style="border-left-color: var(--accent);">
+    <span class="blk-label" style="color:var(--accent)">Reading these numbers</span>
+    DAG alignment is the share of expert-validated causal edges a model reproduces in its own
+    explanations. GPT-4's 94.2% means it reconstructed almost the entire validated causal graph
+    and held it under counter-factual prompts — genuine causal structure, not paraphrased
+    correlation. DeepSeek-67B's 53.0% means it reproduced barely half: it recognised individual
+    constructs but could not reliably reconstruct the causal links between them, the exact failure
+    an adaptive adversary would exploit. The ICC of 0.98 is what makes any of these scores
+    trustworthy in the first place — across two rating waves and four independent raters the scoring
+    was almost perfectly reproducible, so the ranking reflects the models, not rater subjectivity.
+  </div>
 
   <div class="model-grid">
     <div class="model-row">
@@ -441,10 +458,12 @@ Obfuscation: technical amplifier — enables rather than initiates manipulation<
     <span class="blk-label">GitHub</span>
     Full methodology, dataset description, causal graph pipeline, LLM evaluation framework, and research references:
     <span style="font-family:'Share Tech Mono',monospace;font-size:0.78rem;color:var(--accent)">github.com/rootdrifter/mirage</span>
+    — one repository in the <span style="font-family:'Share Tech Mono',monospace;font-size:0.78rem;color:var(--accent)">github.com/rootdrifter</span> portfolio.
   </div>
 
   <footer>
     <span>mirage — llm causal inference research</span>
+    <span>rootdrifter · security-cleared</span>
     <span>rev 2026-06-10</span>
   </footer>
 
