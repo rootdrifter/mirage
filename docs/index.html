@@ -340,7 +340,13 @@
   p { margin-bottom: 0.8rem; }
   p:last-child { margin-bottom: 0; }
 
+  /* Mobile: tables scroll horizontally instead of breaking layout */
+  .table-scroll { overflow-x: auto; margin: 1rem 0; }
+  .table-scroll > table { margin: 0; min-width: 520px; }
+
   @media (max-width: 640px) {
+    .corner-tag { position: static; text-align: left; margin-bottom: 1rem; line-height: 1.7; }
+    .corner-tag span { display: inline-block; margin-right: 1.2rem; }
     .callout-row { grid-template-columns: 1fr 1fr; }
     .model-row { grid-template-columns: 1fr; gap: 0.4rem; }
     .skills-grid { grid-template-columns: 1fr; }
@@ -415,6 +421,11 @@
   .footer-nav a { color: var(--muted); text-decoration: none; }
   .footer-nav a:hover { color: var(--accent); }
   .footer-nav .fsep { color: var(--border-bright); }
+
+  @media (max-width: 420px) {
+    h1 { font-size: 1.8rem; }
+    .container { padding-left: 1.25rem; padding-right: 1.25rem; }
+  }
 </style>
 </head>
 <body>
@@ -524,12 +535,12 @@
 
   <div class="section-break"><span>Datasets</span></div>
 
-  <table class="data-table">
+  <div class="table-scroll"><table class="data-table">
     <tr><th>Channel</th><th>Raw rows</th><th>Cleaned rows</th><th>Malicious %</th><th>Features</th></tr>
     <tr><td>E-mail phishing</td><td>88,647</td><td>59,788</td><td>31.15%</td><td>10</td></tr>
     <tr><td>SMS smishing</td><td>67,008</td><td>67,008</td><td>39.07%</td><td>10</td></tr>
     <tr><td>Synthetic vishing (CVAE)</td><td>60,000</td><td>60,000</td><td>30.00%</td><td>10</td></tr>
-  </table>
+  </table></div>
 
   <p>The vishing dataset was synthesised using a Conditional Variational Auto-Encoder (CVAE),
   preserving the latent causal scaffold while stripping channel-specific surface artefacts.
@@ -566,27 +577,27 @@ Obfuscation: technical amplifier — enables rather than initiates manipulation<
 
   <div class="section-break"><span>DoWhy Validation Results</span></div>
 
-  <table class="data-table">
+  <div class="table-scroll"><table class="data-table">
     <tr><th>Construct</th><th>β (log-odds)</th><th>Placebo p</th><th>Rand-CC p</th><th>Subset p</th><th>Verdict</th></tr>
     <tr><td>Obfuscation</td><td>0.116</td><td>0.002</td><td>0.92</td><td>0.92</td><td class="best">Pass</td></tr>
     <tr><td>Trust</td><td>0.273</td><td>0.002</td><td>0.84</td><td>0.92</td><td class="best">Pass</td></tr>
     <tr><td>Urgency</td><td>−0.067</td><td>0.002</td><td>1.00</td><td>0.96</td><td class="best">Pass</td></tr>
     <tr><td>Deception</td><td>−0.177</td><td>0.002</td><td>0.68</td><td>0.95</td><td class="best">Pass</td></tr>
     <tr><td>Authority</td><td>−0.441</td><td>0.002</td><td>0.94</td><td>0.98</td><td class="best">Pass</td></tr>
-  </table>
+  </table></div>
 
   <p>Minimum empirical p across placebo runs: p ≈ 0.002. All five constructs passed all three
   refutation methods. The validated hybrid DAGs served as ground truth for all LLM scoring.</p>
 
   <div class="section-break"><span>LLM Results — DAG Alignment</span></div>
 
-  <table class="data-table">
+  <div class="table-scroll"><table class="data-table">
     <tr><th>Model</th><th>Alignment (/20)</th><th>Fidelity (/60)</th><th>DAG Alignment %</th><th>S_LLM (/5)</th></tr>
     <tr><td>GPT-4</td><td class="best">18.5</td><td class="best">58.0</td><td class="best">94.2%</td><td class="best">4.60</td></tr>
     <tr><td>Claude 3 Sonnet</td><td class="second">16.0</td><td class="second">56.5</td><td class="second">85.7%</td><td class="second">4.14</td></tr>
     <tr><td>Gemini 2.5 Pro</td><td>14.0</td><td>45.5</td><td>72.3%</td><td>3.45</td></tr>
     <tr><td>DeepSeek-67B</td><td>10.0</td><td>34.5</td><td>53.0%</td><td>2.44</td></tr>
-  </table>
+  </table></div>
 
   <p>ICC(2,1) = 0.98 (95% CI ≈ 0.94–0.99) — classified as "almost perfect"
   (Shrout and Fleiss, 1979). Individual dimension ICC values ranged from 0.89 (Directionality)
