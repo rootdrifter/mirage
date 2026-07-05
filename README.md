@@ -276,3 +276,7 @@ that construct recognition is a necessary but insufficient condition for reliabl
 | Experimental design         | Dual-pathway framework isolating graph discovery from LLM interpretive fidelity |
 | Research communication      | Dissertation-level writeup; structured rubrics with defined scoring dimensions  |
 | Python / data engineering   | YAML-driven modular pipeline; reproducible HPC execution; DAG version control   |
+
+---
+
+*Part of the [rootdrifter](https://github.com/rootdrifter) security portfolio — built and maintained by a security-cleared candidate. UK-issued clearance held now, not pending vetting: deployable to cleared work from day one.*
