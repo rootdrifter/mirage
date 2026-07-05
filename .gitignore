@@ -1,0 +1,52 @@
+# mirage — exclude datasets, model artefacts, and sensitive material
+# Only documentation (Markdown) is tracked in this repository.
+
+# Datasets and corpora (phishing/smishing/vishing — may contain PII)
+datasets/
+data/
+*.csv
+*.tsv
+*.parquet
+*.json
+*.jsonl
+*.eml
+*.mbox
+
+# Model / pipeline artefacts and checkpoints
+checkpoints/
+*.pkl
+*.pt
+*.pth
+*.h5
+*.ckpt
+*.npz
+*.npy
+
+# Notebooks output / runtime
+.ipynb_checkpoints/
+*.ipynb
+
+# Generated graphs / figures
+*.png
+*.jpg
+*.pdf
+*.svg
+*.dot
+*.graphml
+
+# LLM API keys and credentials
+.env
+*.key
+secrets*
+api_keys*
+
+# Python runtime
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS / editor cruft
+.DS_Store
+*.swp
+*~
