@@ -228,6 +228,115 @@
     letter-spacing: 0.15em; display: flex; justify-content: space-between; text-transform: uppercase;
   }
 
+  /* Causal vs correlational stepper (interactive) */
+  .stepper {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.2rem 1.4rem 1.3rem;
+    margin: 1.25rem 0;
+  }
+  .stepper-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .stepper-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .step-dots { display: flex; gap: 0.45rem; }
+  .step-dots span {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border-bright);
+    transition: background 0.2s;
+  }
+  .step-dots span.on { background: var(--accent); }
+  .step-stage {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    padding: 0.9rem 1.2rem;
+    font-size: 0.86rem;
+    margin-bottom: 1rem;
+    min-height: 5.2rem;
+  }
+  .step-stage .stage-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--amber);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+  .step-stage .email-line {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.76rem;
+    color: var(--text-bright);
+    display: block;
+    margin-bottom: 0.45rem;
+    line-height: 1.6;
+  }
+  .step-stage .email-line mark {
+    background: rgba(232,160,0,0.18);
+    color: var(--amber);
+    padding: 0 0.25em;
+  }
+  .step-stage p { font-size: 0.8rem; color: var(--text); margin: 0; }
+  .det-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .det-col {
+    background: var(--surface2);
+    border: 1px solid var(--border-bright);
+    padding: 0.85rem 1.05rem;
+  }
+  .det-col .det-name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.4rem;
+    color: var(--muted);
+  }
+  .det-verdict {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: inline-block;
+    padding: 0.15em 0.6em;
+    border: 1px solid;
+    margin-bottom: 0.5rem;
+  }
+  .det-verdict.flag { color: var(--green); border-color: var(--green); }
+  .det-verdict.miss { color: #e83838; border-color: #e83838; }
+  .det-col p { font-size: 0.78rem; color: var(--text); margin: 0; line-height: 1.55; }
+  .stepper-ctl { display: flex; gap: 0.6rem; justify-content: flex-end; }
+  .stepper-ctl button {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--border-bright);
+    color: var(--text);
+    padding: 0.35em 1em;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .stepper-ctl button:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
+  .stepper-ctl button:disabled { color: var(--muted); opacity: 0.45; cursor: default; }
+  @media (max-width: 640px) {
+    .det-cols { grid-template-columns: 1fr; }
+  }
+
   p { margin-bottom: 0.8rem; }
   p:last-child { margin-bottom: 0; }
 
@@ -376,6 +485,35 @@
   defeating the attack itself. That is the property an adaptive adversary cannot trivially evade,
   and it is why the relevant axis for durable social-engineering defence is causal inference, not
   ever-larger lexical training sets.</p>
+
+  <div class="stepper">
+    <div class="stepper-head">
+      <span class="stepper-title">// Interactive &mdash; why correlation breaks and causation holds</span>
+      <div class="step-dots" id="stepDots" aria-hidden="true"></div>
+    </div>
+    <div class="step-stage">
+      <span class="stage-label" id="stageLabel"></span>
+      <span class="email-line" id="stageEmail"></span>
+      <p id="stageDesc"></p>
+    </div>
+    <div class="det-cols">
+      <div class="det-col">
+        <span class="det-name">Correlational detector</span>
+        <span class="det-verdict" id="corrVerdict"></span>
+        <p id="corrWhy"></p>
+      </div>
+      <div class="det-col">
+        <span class="det-name">Causal detector</span>
+        <span class="det-verdict" id="causVerdict"></span>
+        <p id="causWhy"></p>
+      </div>
+    </div>
+    <div class="stepper-ctl">
+      <button id="stepPrev" aria-label="Previous step">&larr; Prev</button>
+      <button id="stepNext" aria-label="Next step">Next &rarr;</button>
+    </div>
+  </div>
+
 
   <div class="info-block" style="border-left-color: var(--amber);">
     <span class="blk-label" style="color:var(--amber)">Context</span>
@@ -589,6 +727,72 @@ Obfuscation: technical amplifier — enables rather than initiates manipulation<
     var open = l.classList.toggle('open');
     t.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
+})();
+</script>
+<script>
+(function () {
+  var STEPS = [
+    {
+      label: 'Step 1 \u2014 the original phishing email',
+      email: 'Subject: <mark>URGENT</mark> \u2014 verify your account within 24 hours',
+      desc: 'A classic pressure email: a high-weight lexical token plus a deadline.',
+      corr: { flag: true,  why: 'FLAGGED \u2014 the token \u201cURGENT\u201d co-occurs with phishing across the ' +
+             'training corpus; the lexical feature fires.' },
+      caus: { flag: true,  why: 'FLAGGED \u2014 the urgency \u2192 deception \u2192 compliance chain is detected ' +
+             'at the construct level, not the token level.' }
+    },
+    {
+      label: 'Step 2 \u2014 adversarial paraphrase',
+      email: 'Subject: <mark>Time-sensitive</mark> \u2014 your account requires review today',
+      desc: 'The attacker rewrites the surface. The token is gone; the pressure mechanism is identical.',
+      corr: { flag: false, why: 'MISSED \u2014 the learned token disappeared. Correlational features live and die ' +
+             'with the exact surface form.' },
+      caus: { flag: true,  why: 'FLAGGED \u2014 urgency is still doing the causal work on the recipient; ' +
+             'paraphrase cannot remove the mechanism without removing the pressure itself.' }
+    },
+    {
+      label: 'Step 3 \u2014 channel shift',
+      email: '\u260e \u201cThis is your bank\u2019s <mark>security team</mark> \u2014 we need to confirm your details <mark>right now</mark>.\u201d',
+      desc: 'The same manipulation moves from email to a phone call \u2014 authority plus urgency, no email features at all.',
+      corr: { flag: false, why: 'MISSED \u2014 there is no email to score. A lexical email filter has nothing ' +
+             'to evaluate when the attack changes channel.' },
+      caus: { flag: true,  why: 'FLAGGED \u2014 the constructs (authority, urgency) are channel-independent. ' +
+             'The validated DAG models the manipulation, not the medium.' }
+    },
+    {
+      label: 'Step 4 \u2014 why this is the research result',
+      email: 'Urgency \u2192 Deception \u2192 Phishing &nbsp;\u00b7&nbsp; Authority \u2192 Deception \u2192 Phishing',
+      desc: 'Surface features can always be rewritten; the causal driver cannot be removed without defeating ' +
+            'the attack. That is exactly what the LLM benchmark measures: GPT-4 reconstructs 94.2% of the ' +
+            'validated causal graph; DeepSeek-67B only 53.0% \u2014 the gap an adaptive adversary exploits.',
+      corr: { flag: false, why: 'A detector built on co-occurrence is one paraphrase away from blind.' },
+      caus: { flag: true,  why: 'A detector built on validated causal structure survives paraphrase and ' +
+             'channel shift \u2014 the property this research quantifies.' }
+    }
+  ];
+  var i = 0;
+  var dots = document.getElementById('stepDots');
+  STEPS.forEach(function () { dots.appendChild(document.createElement('span')); });
+  var el = function (id) { return document.getElementById(id); };
+  function render() {
+    var s = STEPS[i];
+    el('stageLabel').textContent = s.label;
+    el('stageEmail').innerHTML = s.email;
+    el('stageDesc').textContent = s.desc;
+    var cv = el('corrVerdict'), uv = el('causVerdict');
+    cv.textContent = s.corr.flag ? 'Flagged' : 'Missed';
+    cv.className = 'det-verdict ' + (s.corr.flag ? 'flag' : 'miss');
+    uv.textContent = s.caus.flag ? 'Flagged' : 'Missed';
+    uv.className = 'det-verdict ' + (s.caus.flag ? 'flag' : 'miss');
+    el('corrWhy').textContent = s.corr.why;
+    el('causWhy').textContent = s.caus.why;
+    el('stepPrev').disabled = i === 0;
+    el('stepNext').disabled = i === STEPS.length - 1;
+    dots.querySelectorAll('span').forEach(function (d, j) { d.classList.toggle('on', j <= i); });
+  }
+  el('stepPrev').addEventListener('click', function () { if (i > 0) { i--; render(); } });
+  el('stepNext').addEventListener('click', function () { if (i < STEPS.length - 1) { i++; render(); } });
+  render();
 })();
 </script>
 </body>
