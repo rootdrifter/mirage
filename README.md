@@ -434,4 +434,4 @@ empirically — turning the argument above from a sound deduction into a red-tea
 
 ---
 
-*Part of the [rootdrifter](https://github.com/rootdrifter) security portfolio — built and maintained by a security-cleared candidate. UK-issued clearance held now, not pending vetting: deployable to cleared work from day one.*
+*Part of the [rootdrifter](https://github.com/rootdrifter) security portfolio — full writeup at [rootdrifter.io/portfolio/mirage/](https://rootdrifter.io/portfolio/mirage/). Built and maintained by a security-cleared candidate. UK-issued clearance held now, not pending vetting: deployable to cleared work from day one.*
