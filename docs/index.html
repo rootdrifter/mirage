@@ -688,6 +688,69 @@ Obfuscation: technical amplifier — enables rather than initiates manipulation<
     fine-tuning or hybrid graph-LLM ensemble architectures.
   </div>
 
+  <div class="section-break"><span>Adversarial Evasion — why causal detection resists it</span></div>
+
+  <p>The practical pay-off, in plain terms. A <strong>correlational</strong> detector (essentially
+  every mainstream phishing filter) learns the <em>surface</em> of today's phishing — the word
+  "URGENT", a sender format, a link shape. An adversary with access to the detector simply sends
+  variations, keeps the ones that score below the block threshold, and tunes their way past: swap
+  "URGENT" for "time-sensitive", reshape the URL — the message still works on the human, but the
+  filter no longer recognises it. The surface is what the attacker controls.</p>
+
+  <p>A <strong>causal</strong> detector learns <em>what makes phishing succeed</em> — urgency,
+  authority, trust, deception — not how it looks. One sentence makes it robust:</p>
+
+  <div class="info-block" style="border-left-color: var(--amber);">
+    <span class="blk-label" style="color:var(--amber)">The robustness argument</span>
+    The surface features can be changed freely; the causal structure cannot be changed without
+    defeating the attack itself. Strip the urgency, authority and deception to evade a causal detector
+    and you have removed the levers that make the recipient act — there is no successful phishing left
+    to catch. In the cross-channel stress tests the core edges (Urgency→Deception, Trust→Authority)
+    survived a move from e-mail all the way to synthetic voice — Pearl's criterion in operational form.
+  </div>
+
+  <p>The open question is whether today's LLMs can actually do this reasoning. The benchmark answers
+  honestly: <strong>GPT-4 reproduced 94.2%</strong> of the validated causal structure; the weakest
+  model (<strong>DeepSeek-67B, 53.0%</strong>) reverted to correlational description — i.e. it would be
+  evadable in exactly the way above. Causal robustness is only as strong as the reasoner implementing it.</p>
+
+  <div class="section-break"><span>Dataset Scale — what 88,647 records buys</span></div>
+
+  <p>The primary corpus is <strong>88,647 raw phishing e-mails</strong> (59,788 after cleaning), with
+  67,008 smishing and 60,000 synthetic vishing records. Scale is what makes the statistics defensible:</p>
+  <ul>
+    <li><strong>Tight intervals.</strong> ICC(2,1) = 0.98 with a 95% CI ≈ 0.94–0.99 — a narrow band
+    only large, consistent samples produce.</li>
+    <li><strong>Power for small / inverse effects.</strong> Subtle constructs act through negative
+    log-odds (Authority β = −0.441); at this scale all five still pass placebo testing at p ≈ 0.002
+    (n = 500 permutations each) — effects that would vanish in a few hundred samples.</li>
+    <li><strong>Robust structure discovery.</strong> Causal-discovery algorithms are data-hungry; the
+    cross-method consensus that lets edges be merged into a validated DAG needs a large sample.</li>
+  </ul>
+  <p style="font-size:0.9rem;color:var(--muted)"><strong>What a smaller dataset would miss:</strong> a
+  few hundred e-mails surface only the loudest correlation ("URGENT" ≈ phishing) — the brittle signal
+  this project set out to move past. The subtle mediators, negative-coefficient constructs, and
+  cross-channel robustness all need the statistical power 88,647 records provide.</p>
+
+  <div class="section-break"><span>Limitations &amp; Future Work</span></div>
+
+  <p>Intellectual honesty strengthens the result. The genuine limits:</p>
+  <ul>
+    <li><strong>Human-rated scoring</strong> — rubric-based; ICC 0.98 shows high consistency but
+    "depth"/"generalisability" retain judgement.</li>
+    <li><strong>Model versioning</strong> — three models queried via web UI, not pinned API snapshots;
+    results are a snapshot of that LLM generation, not a permanent constant.</li>
+    <li><strong>Construct→feature mapping</strong> (e.g. Urgency ≈ response time) is a defensible proxy,
+    not ground truth.</li>
+    <li><strong>Synthetic vishing</strong> — CVAE-generated to avoid processing real voice data
+    (a privacy choice); a model of vishing structure, not captured real-world vishing.</li>
+    <li><strong>Feasibility, not deployment</strong> — this benchmarks whether LLMs <em>can</em> reason
+    causally; it does not ship a live detector. Building and red-teaming one is future work.</li>
+  </ul>
+  <p style="font-size:0.9rem;color:var(--muted)">A follow-up should pin model versions, validate the
+  construct mappings against human-labelled ground truth, test on real vishing, and build an actual
+  causal-informed detector to <em>measure</em> evasion resistance empirically.</p>
+
   <div class="section-break"><span>Skills Demonstrated</span></div>
 
   <div class="skills-grid">

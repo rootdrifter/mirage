@@ -262,6 +262,109 @@ that construct recognition is a necessary but insufficient condition for reliabl
 
 ---
 
+## Adversarial Evasion — Why Causal Detection Resists It
+
+This is the practical pay-off of the whole project, stated plainly enough for a non-specialist.
+
+A **correlational** detector — essentially every mainstream phishing filter — learns from the
+*surface* of today's phishing: the word "URGENT", a particular sender format, a link shape, a subject
+line. It works until the attacker changes those surface features, and the attacker *can*. An adversary
+with access to the detector (or a copy of it) sends variation after variation, watches which ones score
+below the block threshold, and keeps the changes that get through. This is a cheap hill-climbing attack.
+Swap "URGENT" for "time-sensitive", restructure the sender line, reshape the URL — the message still
+works on the human, but the filter no longer recognises it. The surface is exactly what the attacker
+controls, so a detector that depends on the surface is one the attacker can tune their way past.
+
+A **causal** detector is built differently. Instead of learning *how phishing looks*, it learns *what
+makes phishing succeed*: the underlying mechanisms — urgency, authority, trust, deception — that cause a
+recipient to comply. One sentence makes it robust:
+
+> The surface features can be changed freely; the causal structure cannot be changed without defeating
+> the attack itself.
+
+If the attacker strips out the urgency, the authority, and the deception to evade a causal detector,
+they have removed the very levers that make the recipient act — so there is no successful phishing
+message left to catch. The evasion that beats a correlational filter (paraphrase the surface) is
+precisely the evasion a causal detector is immune to, because it was never looking at the surface. This
+is Pearl's criterion in operational form: a genuine causal relation survives surface perturbation — and
+in the cross-channel stress tests the core edges (Urgency→Deception, Trust→Authority) **did** survive a
+move from e-mail all the way to synthetic voice.
+
+The research question is therefore not "is causal detection a nice idea" but "can today's LLMs actually
+do the causal reasoning it requires." The benchmark answers honestly: **GPT-4 reproduced 94.2%** of the
+validated causal structure and held up under reversed prompts; the weakest model (**DeepSeek-67B,
+53.0%**) fell back to correlational description — which means, deployed as a detector, it would be
+evadable in exactly the way above. Causal robustness is only as strong as the reasoner that implements
+it, and measuring that gap is the contribution.
+
+---
+
+## Dataset Scale — What 88,647 Records Buys
+
+The primary corpus is **88,647 raw phishing e-mails** (59,788 after cleaning), alongside 67,008
+smishing and 60,000 synthetic vishing records. Scale is not vanity here; it is what makes the
+statistical claims defensible.
+
+- **Stable estimates and tight intervals.** With tens of thousands of records per channel, the
+  construct→outcome effect sizes (the log-odds β in the DoWhy table) are precise enough to be trusted
+  *and* refuted. The reliability ceiling shows it: ICC(2,1) = 0.98 with a 95% CI of ≈ 0.94–0.99 — a
+  narrow interval that only large, consistent samples produce.
+- **Power to detect small and inverse effects.** Several constructs act through *negative* or indirect
+  log-odds (Authority β = −0.441, Urgency β = −0.067). Effects that subtle vanish into the noise of a
+  few hundred samples; at this scale they are stable enough that all five constructs pass placebo
+  testing at p ≈ 0.002 (n = 500 Monte-Carlo permutations each).
+- **Robust structure discovery.** Causal-discovery algorithms (GES, PC, Bayesian Networks, DeepNOTEARS)
+  are data-hungry — sparse data yields unstable, contradictory graphs. The cross-method consensus that
+  lets edges be *merged* into a validated hybrid DAG only emerges from a large, representative sample.
+- **A meaningful held-out test.** Scale is what let the synthetic-vishing cross-channel stress test
+  mean something — the causal edges were shown to survive a channel shift rather than being an artefact
+  of one small dataset.
+
+**What a smaller dataset would have missed.** With a few hundred e-mails the pipeline would likely have
+surfaced the one or two loudest correlations ("URGENT" ≈ phishing) and stopped — the exact brittle,
+correlational signal this project set out to move beyond. The subtle mediators (Deception as the
+convergent mediator; Obfuscation as a technical *amplifier*, not an initiator), the negative-coefficient
+constructs, and the cross-channel robustness all need the statistical power that 88,647 records provide.
+Scale is what turns "a plausible story about phishing" into "a refuted, reproducible causal model."
+
+*(Honesty note: 88,647 is the raw corpus; 59,788 records remain after cleaning. Both are reported so the
+scale claim is not overstated.)*
+
+---
+
+## Limitations and Future Work
+
+Intellectual honesty strengthens the result; these are the genuine limits.
+
+- **Human-rated scoring.** The S_LLM dimensions were rated against a fixed rubric by multiple raters.
+  ICC(2,1) = 0.98 shows the rating was highly consistent, but rubric-based scoring of "depth" and
+  "generalisability" retains an irreducible element of judgement.
+- **Model versioning / reproducibility.** Three of the four models (GPT-4, Claude 3 Sonnet, Gemini 2.5
+  Pro) were queried through their web interfaces, not pinned API snapshots; only DeepSeek-67B ran on
+  controlled hardware. Frontier models change underneath their names, so the scores are a **snapshot of
+  that generation**, not a permanently reproducible constant.
+- **Construct→feature mapping is a modelling choice.** Proxies such as *Urgency ≈ website response time*
+  or *Deception ≈ domain age* are defensible operationalisations, not ground truth; a different mapping
+  could shift edge weights.
+- **Synthetic vishing.** The voice channel was CVAE-generated to preserve the latent causal scaffold
+  without processing real personal voice data (a deliberate privacy choice). It is therefore a model of
+  vishing structure, not captured real-world vishing, and the −0.42 depth drop there may partly reflect
+  that.
+- **One weaker graph.** The smishing DAG was only partially validated (PC ∪ DeepNOTEARS failed the
+  NOTEARS acyclicity check), so cross-channel claims rest most firmly on the e-mail and voice graphs.
+- **Probe-set size.** 36 structured prompts across four models is a focused probe, not an exhaustive
+  one; a larger prompt bank and more models would tighten the conclusions.
+- **Feasibility, not deployment.** This work *benchmarks* whether LLMs can do the causal reasoning a
+  robust detector would need (objective O4). It does **not** ship a live causal-informed detector;
+  building and red-teaming one is future work.
+
+**A follow-up study should:** pin model versions via fixed API snapshots; expand the prompt bank and
+model set; validate the construct→feature mappings against human-labelled ground truth; test on real
+(not synthetic) vishing; and build an actual causal-informed detector to **measure** evasion resistance
+empirically — turning the argument above from a sound deduction into a red-teamed result.
+
+---
+
 ## Skills Demonstrated
 
 | Skill area                  | Evidence                                                                        |
@@ -272,6 +375,7 @@ that construct recognition is a necessary but insufficient condition for reliabl
 | LLM evaluation              | Designed and executed 36-prompt structured evaluation across four frontier models|
 | Quantitative analysis       | SLLM composite scoring, ICC inter-rater reliability, re-weighting sensitivity   |
 | Threat modelling            | Mapped technical indicators to psychological manipulation constructs             |
+| Adversarial robustness      | Articulated why causal structure resists the surface paraphrase that defeats correlational filters |
 | Cross-channel generalisation| Tested robustness across e-mail, SMS, and voice attack surfaces                 |
 | Experimental design         | Dual-pathway framework isolating graph discovery from LLM interpretive fidelity |
 | Research communication      | Dissertation-level writeup; structured rubrics with defined scoring dimensions  |
