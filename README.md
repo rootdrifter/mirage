@@ -434,4 +434,4 @@ empirically — turning the argument above from a sound deduction into a red-tea
 
 ---
 
-*Part of the [rootdrifter](https://github.com/rootdrifter) security portfolio — full writeup at [rootdrifter.io/portfolio/mirage/](https://rootdrifter.io/portfolio/mirage/). Built and maintained by a security-cleared candidate — current UK government clearance obtained through employment in a high-security environment.*
+*Part of the [rootdrifter](https://github.com/rootdrifter) security portfolio — full writeup at [rootdrifter.io/portfolio/mirage/](https://rootdrifter.io/portfolio/mirage/).*
